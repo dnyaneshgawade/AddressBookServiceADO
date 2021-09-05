@@ -1,0 +1,4 @@
+create database AddressBookServiceADO
+
+
+use AddressBookServiceADO
