@@ -82,13 +82,16 @@ SELECT
     ERROR_MESSAGE() AS ErrorMessage;
 END CATCH
 
-Create or Alter Procedure spRetrieveAddressBookSizeByState
+
+
+
+Create or Alter Procedure spRetrieveContactsOrderByFirstName
 (
-	@State varchar(20)
+	@City varchar(20)
 )
 As
 Begin Try
-Select count(FirstName) From AddressBook Where State=@State group by State
+Select * From AddressBook Where City=@City Order by FirstName
 End Try
 Begin Catch
 SELECT
@@ -98,4 +101,3 @@ SELECT
     ERROR_LINE() AS ErrorLine,
     ERROR_MESSAGE() AS ErrorMessage;
 END CATCH
-

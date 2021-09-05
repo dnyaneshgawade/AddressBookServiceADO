@@ -121,8 +121,6 @@ namespace AddressBookServiceADO
 
                 sqlConnection.Open();
                 da.Fill(dataTable);
-
-                list.Clear();
                 foreach (DataRow dr in dataTable.Rows)
                 {
                     list.Add(
@@ -136,7 +134,7 @@ namespace AddressBookServiceADO
                             State = Convert.ToString(dr["State"]),
                             Zip = Convert.ToDouble(dr["Zip"]),
                             PhoneNumber = Convert.ToDouble(dr["PhoneNumber"]),
-                            Email = Convert.ToString(dr["Email"]),
+                            Email = Convert.ToString(dr["Email"])
                         }
                         );
                 }
@@ -230,6 +228,51 @@ namespace AddressBookServiceADO
             }
             
         }
+
+        public List<AddressBook> RetrieveContactsAlphabetically()
+        {
+            try
+            {
+                SqlCommand sqlCommand = new SqlCommand("spRetrieveContactsOrderByFirstName", sqlConnection);
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+                Console.Write("Enter City ");
+                string city = Console.ReadLine();
+                sqlCommand.Parameters.AddWithValue("@City", city);
+                SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
+                DataTable dataTable = new DataTable();
+
+                sqlConnection.Open();
+                sqlDataAdapter.Fill(dataTable);
+                foreach (DataRow dr in dataTable.Rows)
+                {
+                    list.Add(
+                        new AddressBook
+                        {
+                            AddressId = Convert.ToInt32(dr["AddressId"]),
+                            FirstName = Convert.ToString(dr["FirstName"]),
+                            LastName = Convert.ToString(dr["LastName"]),
+                            Address = Convert.ToString(dr["Address"]),
+                            City = Convert.ToString(dr["City"]),
+                            State = Convert.ToString(dr["State"]),
+                            Zip = Convert.ToDouble(dr["Zip"]),
+                            PhoneNumber = Convert.ToDouble(dr["PhoneNumber"]),
+                            Email = Convert.ToString(dr["Email"])
+                        }
+                        );
+                }
+                return list;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+
+        }
+
         public void Operations()
         {
             while (choice != 15)
@@ -239,6 +282,7 @@ namespace AddressBookServiceADO
                     "\n Enter 3 for Delete Address Record" +
                     "\n Enter 4 for Retrive Address belongs to City or State" +
                     "\n Enter 5 for Retrive Number Of Addresses belongs to City or State" +
+                    "\n Enter 6 for Display Addressbook alphabetically by Person’s name belongs to City" +
                     "\n Enter 15 for Exit");
                 Console.WriteLine("\n Enter Your Choice ");
                 choice = Convert.ToInt16(Console.ReadLine());
@@ -259,6 +303,10 @@ namespace AddressBookServiceADO
                         break;
                     case 5:
                         SizeOfAddressBookByCityOrState();
+                        break;
+                    case 6:
+                        RetrieveContactsAlphabetically();
+                        Display();
                         break;
                     default:
                         Console.WriteLine("Wrong Input");
