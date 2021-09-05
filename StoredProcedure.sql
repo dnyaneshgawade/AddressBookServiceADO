@@ -1,5 +1,6 @@
 Create or Alter Procedure spInsertAddress
 (
+	@AddressId int ,
 	@FirstName varchar(20),
 	@LastName varchar(20),
 	@Address varchar(100), 
@@ -21,3 +22,26 @@ SELECT
     ERROR_LINE() AS ErrorLine,
     ERROR_MESSAGE() AS ErrorMessage;
 END CATCH
+
+
+
+Create or Alter Procedure spUpdateAddress
+(
+	@FirstName varchar(20),
+	@Address varchar(50)
+)
+As
+Begin Try
+Update  AddressBook
+set Address=@Address where FirstName=@FirstName
+End Try
+Begin Catch
+SELECT
+    ERROR_NUMBER() AS ErrorNumber,
+    ERROR_STATE() AS ErrorState,
+    ERROR_PROCEDURE() AS ErrorProcedure,
+    ERROR_LINE() AS ErrorLine,
+    ERROR_MESSAGE() AS ErrorMessage;
+END CATCH
+
+

@@ -46,11 +46,42 @@ namespace AddressBookServiceADO
             }
         }
 
+        public void UpdateAddress()
+        {
+            try
+            {
+                SqlCommand command = new SqlCommand("spUpdateAddress",sqlConnection);
+                command.CommandType = CommandType.StoredProcedure;
+                Console.Write("\n Enter FirstName And Address ");
+                string firstName = Console.ReadLine();
+                string address = Console.ReadLine();
+                command.Parameters.AddWithValue("@Address", address);
+                command.Parameters.AddWithValue("@FirstName", firstName);
+                sqlConnection.Open();
+                int i = command.ExecuteNonQuery();
+                if (i >= 1)
+                {
+                    Console.WriteLine("Data Updated sucessfully...");
+                }
+                else
+                    Console.WriteLine("Something went wrong... ");
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+
         public void Operations()
         {
             while (choice != 15)
             {
                 Console.WriteLine("\n Enter 1 for Add Address Record" +
+                    "\n Enter 2 for Update Address Record"+
                     "\n Enter 15 for Exit");
                 Console.WriteLine("\n Enter Your Choice ");
                 choice = Convert.ToInt16(Console.ReadLine());
@@ -58,6 +89,9 @@ namespace AddressBookServiceADO
                 {
                     case 1:
                         AddEmployee();
+                        break;
+                    case 2:
+                        UpdateAddress();
                         break;
                     default:
                         Console.WriteLine("Wrong Input");
