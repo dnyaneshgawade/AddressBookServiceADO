@@ -76,12 +76,41 @@ namespace AddressBookServiceADO
             }
         }
 
+        public void DeleteAddress()
+        {
+            try
+            {
+                SqlCommand command = new SqlCommand("spDeleteAddress", sqlConnection);
+                command.CommandType = CommandType.StoredProcedure;
+                Console.Write("\n Enter FirstName");
+                string firstName = Console.ReadLine();
+                command.Parameters.AddWithValue("@FirstName", firstName);
+                sqlConnection.Open();
+                int i = command.ExecuteNonQuery();
+                if (i >= 1)
+                {
+                    Console.WriteLine("Data Deleted sucessfully...");
+                }
+                else
+                    Console.WriteLine("Something went wrong... ");
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+
         public void Operations()
         {
             while (choice != 15)
             {
                 Console.WriteLine("\n Enter 1 for Add Address Record" +
                     "\n Enter 2 for Update Address Record"+
+                    "\n Enter 3 for Delete Address Record" +
                     "\n Enter 15 for Exit");
                 Console.WriteLine("\n Enter Your Choice ");
                 choice = Convert.ToInt16(Console.ReadLine());
@@ -92,6 +121,9 @@ namespace AddressBookServiceADO
                         break;
                     case 2:
                         UpdateAddress();
+                        break;
+                    case 3:
+                        DeleteAddress();
                         break;
                     default:
                         Console.WriteLine("Wrong Input");

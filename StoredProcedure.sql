@@ -25,15 +25,16 @@ END CATCH
 
 
 
-Create or Alter Procedure spUpdateAddress
+
+
+
+Create or Alter Procedure spDeleteAddress
 (
-	@FirstName varchar(20),
-	@Address varchar(50)
+	@FirstName varchar(20)
 )
 As
 Begin Try
-Update  AddressBook
-set Address=@Address where FirstName=@FirstName
+Delete from AddressBook Where FirstName=@FirstName
 End Try
 Begin Catch
 SELECT
@@ -43,5 +44,4 @@ SELECT
     ERROR_LINE() AS ErrorLine,
     ERROR_MESSAGE() AS ErrorMessage;
 END CATCH
-
 
