@@ -8,6 +8,7 @@ namespace AddressBookServiceADO
 {
     public class AddressBookOperations
     {
+        public List<AddressBook> list = new List<AddressBook>();
         public static int choice;
         public static string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AddressBookServiceADO";
         SqlConnection sqlConnection = new SqlConnection(connectionString);
@@ -104,6 +105,70 @@ namespace AddressBookServiceADO
             }
         }
 
+        public List<AddressBook> RetrieveAddressBelongsToCityOrState()
+        {
+            try
+            {
+                SqlCommand sqlCommand = new SqlCommand("spRetrieveAddressBelongsToCityOrState", sqlConnection);
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+                Console.Write("Enter City and State\n ");
+                string city = Console.ReadLine();
+                string state = Console.ReadLine();
+                sqlCommand.Parameters.AddWithValue("@City", city);
+                sqlCommand.Parameters.AddWithValue("@State", state);
+                SqlDataAdapter da = new SqlDataAdapter(sqlCommand);
+                DataTable dataTable = new DataTable();
+
+                sqlConnection.Open();
+                da.Fill(dataTable);
+
+                list.Clear();
+                foreach (DataRow dr in dataTable.Rows)
+                {
+                    list.Add(
+                        new AddressBook
+                        {
+                            AddressId = Convert.ToInt32(dr["AddressId"]),
+                            FirstName = Convert.ToString(dr["FirstName"]),
+                            LastName = Convert.ToString(dr["LastName"]),
+                            Address = Convert.ToString(dr["Address"]),
+                            City = Convert.ToString(dr["City"]),
+                            State = Convert.ToString(dr["State"]),
+                            Zip = Convert.ToDouble(dr["Zip"]),
+                            PhoneNumber = Convert.ToDouble(dr["PhoneNumber"]),
+                            Email = Convert.ToString(dr["Email"]),
+                        }
+                        );
+                }
+                return list;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+
+        public void Display()
+        {
+            foreach (AddressBook record in list)
+            {
+                Console.WriteLine("_________________________________");
+                Console.WriteLine("Address Id  :" + record.AddressId);
+                Console.WriteLine("First name :" + record.FirstName);
+                Console.WriteLine("Last Name :" + record.LastName);
+                Console.WriteLine("Address :" + record.Address);
+                Console.WriteLine("City :" + record.City);
+                Console.WriteLine("State :" + record.State);
+                Console.WriteLine(" Zip:" + record.Zip);
+                Console.WriteLine("PhoneNumber :" + record.PhoneNumber);
+                Console.WriteLine("Email :" + record.Email);
+                Console.WriteLine("_________________________________\n\n");
+            }
+        }
         public void Operations()
         {
             while (choice != 15)
@@ -111,6 +176,7 @@ namespace AddressBookServiceADO
                 Console.WriteLine("\n Enter 1 for Add Address Record" +
                     "\n Enter 2 for Update Address Record"+
                     "\n Enter 3 for Delete Address Record" +
+                    "\n Enter 4 for Retrive Address belongs to City or State" +
                     "\n Enter 15 for Exit");
                 Console.WriteLine("\n Enter Your Choice ");
                 choice = Convert.ToInt16(Console.ReadLine());
@@ -124,6 +190,10 @@ namespace AddressBookServiceADO
                         break;
                     case 3:
                         DeleteAddress();
+                        break;
+                    case 4:
+                        RetrieveAddressBelongsToCityOrState();
+                        Display();
                         break;
                     default:
                         Console.WriteLine("Wrong Input");
