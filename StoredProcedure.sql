@@ -64,3 +64,38 @@ SELECT
     ERROR_MESSAGE() AS ErrorMessage;
 END CATCH
 
+
+Create or Alter Procedure spRetrieveAddressBookSizeByCity
+(
+	@City varchar(20)
+)
+As
+Begin Try
+Select count(FirstName) From AddressBook Where City=@City group by City
+end Try
+Begin Catch
+SELECT
+    ERROR_NUMBER() AS ErrorNumber,
+    ERROR_STATE() AS ErrorState,
+    ERROR_PROCEDURE() AS ErrorProcedure,
+    ERROR_LINE() AS ErrorLine,
+    ERROR_MESSAGE() AS ErrorMessage;
+END CATCH
+
+Create or Alter Procedure spRetrieveAddressBookSizeByState
+(
+	@State varchar(20)
+)
+As
+Begin Try
+Select count(FirstName) From AddressBook Where State=@State group by State
+End Try
+Begin Catch
+SELECT
+    ERROR_NUMBER() AS ErrorNumber,
+    ERROR_STATE() AS ErrorState,
+    ERROR_PROCEDURE() AS ErrorProcedure,
+    ERROR_LINE() AS ErrorLine,
+    ERROR_MESSAGE() AS ErrorMessage;
+END CATCH
+

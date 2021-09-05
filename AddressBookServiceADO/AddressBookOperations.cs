@@ -169,6 +169,67 @@ namespace AddressBookServiceADO
                 Console.WriteLine("_________________________________\n\n");
             }
         }
+
+        public void SizeOfAddressBookByCityOrState()
+        {
+            Console.WriteLine("\n Enter 1 for Size Of AddressBook By City"+
+                "\n Enter 2 for Size Of AddressBook By State");
+            Console.WriteLine("Enter Choice");
+            int Choice = Convert.ToInt32(Console.ReadLine());
+            switch (Choice)
+            {
+                case 1:
+                    try
+                    {
+                        sqlConnection.Open();
+                        SqlCommand sqlCommand = new SqlCommand("spRetrieveAddressBookSizeByCity", sqlConnection);
+                        sqlCommand.CommandType = CommandType.StoredProcedure;
+                        Console.Write("Enter City ");
+                        string city = Console.ReadLine();
+                        sqlCommand.Parameters.AddWithValue("@City", city);
+                        SqlDataReader reader = sqlCommand.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            Console.WriteLine(string.Format("Number Of Address Belongs To " + city + ": {0}", reader[0]));
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception(e.Message);
+                    }
+                    finally
+                    {
+                        sqlConnection.Close();
+                    }
+                    break;
+
+                case 2:
+                    try
+                    {
+                        sqlConnection.Open();
+                        SqlCommand sqlCommand = new SqlCommand("spRetrieveAddressBookSizeByState", sqlConnection);
+                        sqlCommand.CommandType = CommandType.StoredProcedure;
+                        Console.Write("Enter State ");
+                        string state= Console.ReadLine();
+                        sqlCommand.Parameters.AddWithValue("@State", state);
+                        SqlDataReader reader = sqlCommand.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            Console.WriteLine(string.Format("Number Of Address Belongs To " + state + ": {0}", reader[0]));
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception(e.Message);
+                    }
+                    finally
+                    {
+                        sqlConnection.Close();
+                    }
+                    break;
+            }
+            
+        }
         public void Operations()
         {
             while (choice != 15)
@@ -177,6 +238,7 @@ namespace AddressBookServiceADO
                     "\n Enter 2 for Update Address Record"+
                     "\n Enter 3 for Delete Address Record" +
                     "\n Enter 4 for Retrive Address belongs to City or State" +
+                    "\n Enter 5 for Retrive Number Of Addresses belongs to City or State" +
                     "\n Enter 15 for Exit");
                 Console.WriteLine("\n Enter Your Choice ");
                 choice = Convert.ToInt16(Console.ReadLine());
@@ -194,6 +256,9 @@ namespace AddressBookServiceADO
                     case 4:
                         RetrieveAddressBelongsToCityOrState();
                         Display();
+                        break;
+                    case 5:
+                        SizeOfAddressBookByCityOrState();
                         break;
                     default:
                         Console.WriteLine("Wrong Input");
